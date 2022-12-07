@@ -2,21 +2,17 @@ from pathlib import Path
 
 file_path = './files/'
 file_name = 'day1-calories-list.txt'
-
 individual_calories_list = []
 grouped_calories_dict = {}
 elf_count = 1
-most_calories_dict = {}
-# Iterate through each line in the file.
+most_calories_list = []
+
 with open(Path(file_path + file_name), 'r') as file:
+    # Iterate through each line in the file.
     for line in file:
-        # If it is not a blank line then, if it is the first line in the file continue to next line else 
-        # build a list of calories for that individual elf.
+        # If it is not a blank line then build a list of calories for that individual elf.
         if line.strip() != '':
-            if elf_count == 1:
-                ...
-            else:
-                individual_calories_list.append(int(line.strip()))
+            individual_calories_list.append(int(line.strip()))
         # It it is a blank line then add the elf to the dictionary as a key, and the list
         # of calories as the value, then clear the list of calories.
         else:
@@ -26,19 +22,21 @@ with open(Path(file_path + file_name), 'r') as file:
     # If the last line in the file is not blank then add the final elf to the dictionary.
     if len(individual_calories_list) != 0:
         grouped_calories_dict['elf_' + str(elf_count)] = individual_calories_list
-# Iterate through each elf in the dictionary and sum the calories list.
-for elf in grouped_calories_dict:
-    total_calories = sum(grouped_calories_dict[elf])
-    # If it is the first elf then add the elf and the total calories to the most_calories_dict dictionary.
-    if not most_calories_dict:
-        most_calories_dict = {elf: total_calories}
-        elf_with_most_calories = elf
-    # If it is not the first elf then check if the total calories is higher than the current highest,
-    # and if so then replace the elf in the most_calories_dict dictionary.
-    elif total_calories > most_calories_dict[elf_with_most_calories]:
-        most_calories_dict = {elf: total_calories}
-        elf_with_most_calories = elf
 
-elf_with_most_calories = list(most_calories_dict.keys())[0]
-most_calories_carried = most_calories_dict[elf_with_most_calories]
-print('The elf carrying the most calories is {elf} with {calories}.'.format(elf=elf_with_most_calories, calories=most_calories_carried))
+# Sort the grouped calories dictionary by total calories in ascending order.
+sorted_grouped_calories_list = sorted(grouped_calories_dict.items(), key=lambda kv: sum(kv[1]))
+
+# Pop off the top 3 into a new list.
+for i in range(0, 3):
+    most_calories_list.append(sorted_grouped_calories_list.pop())
+
+elf_with_most_calories = most_calories_list[0][0]
+most_calories = sum(most_calories_list[0][1])
+top_three_calories = sum([sum(item[1]) for item in most_calories_list])
+
+print('The elf carrying the most calories is {elf} with {calories} calories.'.format(
+    elf=elf_with_most_calories, calories=most_calories
+))
+print('The 3 elfs carrying the most calories have a combined total of {calories} calories.'.format(
+    calories=top_three_calories
+))

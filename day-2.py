@@ -1,25 +1,38 @@
 from pathlib import Path
 
-file_path = './files/'
-file_name = 'day2-strategy-guide.txt'
-game_dict = {}
-games_dict = {}
-game_number = 1
+def main():
+    file_path = './files/'
+    file_name = 'day2-strategy-guide.txt'
 
-with open(Path(file_path + file_name), 'r') as file:
-    # Iterate through each line in the file.
-    for line in file:
-        # Extract the game letter data.
-        opponent_letter = line.strip()[0]
-        my_letter = line.strip()[2]
-        # Build a dictionary for each game, and then a dictionary of all games.
-        game_dict['opponent_letter'] = opponent_letter
-        game_dict['my_letter'] = my_letter
-        games_dict['game_' + str(game_number)] = game_dict
-        game_dict = {}
-        game_number += 1
+    games_dictionary = create_games_dict(file_path=file_path, file_name=file_name)
+    game_score_shape = calculate_game_score(games_dict=games_dictionary, conversion_type='shape')
+    game_score_result = calculate_game_score(games_dict=games_dictionary, conversion_type='result')
 
-def calculate_game_score(conversion_type: str):
+    print('Using the letters as shapes, your total game score is {score}.'.format(score=game_score_shape))
+    print('Using the letters as results, your total game score is {score}.'.format(score=game_score_result))
+
+def create_games_dict(file_path: str, file_name: str) -> dict:
+    game_dict = {}
+    games_dict = {}
+    game_number = 1
+
+    with open(Path(file_path + file_name), 'r') as file:
+        # Iterate through each line in the file.
+        for line in file:
+            # Extract the game letter data.
+            opponent_letter = line.strip()[0]
+            my_letter = line.strip()[2]
+            # Build a dictionary for each game, and then a dictionary of all games.
+            game_dict['opponent_letter'] = opponent_letter
+            game_dict['my_letter'] = my_letter
+            games_dict['game_' + str(game_number)] = game_dict
+            game_dict = {}
+            game_number += 1
+    
+    return games_dict
+
+def calculate_game_score(games_dict: dict, conversion_type: str) -> int:
+    # Created these conversions to make the code easier to understand.
     opponent_conversion_shape = {'A': 'rock', 'B': 'paper', 'C': 'scissors'}
     my_conversion_shape = {'X': 'rock', 'Y': 'paper', 'Z': 'scissors'}
     my_conversion_result = {'X': 'lose', 'Y': 'draw', 'Z': 'win'}
@@ -52,13 +65,6 @@ def calculate_game_score(conversion_type: str):
         my_game_score += scores[my_result]
 
     return my_game_score
-
-def main():
-    game_score_shape = calculate_game_score('shape')
-    game_score_result = calculate_game_score('result')
-
-    print('Using the letters as shapes, your total game score is {score}.'.format(score=game_score_shape))
-    print('Using the letters as results, your total game score is {score}.'.format(score=game_score_result))
 
 if __name__ == '__main__':
     main()

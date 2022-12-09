@@ -35,7 +35,7 @@ def create_assignment_dict(file_path:str, file_name: str) -> dict:
     
     return assignments_dict
 
-def duplicate_section_check(assignments_dict: dict):
+def duplicate_section_check(assignments_dict: dict) -> int:
     full_duplication_count = 0
     # Iterate through the assignments.
     for assignment in assignments_dict.values():
@@ -57,7 +57,7 @@ def duplicate_section_check(assignments_dict: dict):
         
     return full_duplication_count
 
-def overlap_section_check(assignments_dict: dict):
+def overlap_section_check(assignments_dict: dict) -> int:
     overlap_count = 0
     # Iterate through the assignments.
     for assignment in assignments_dict.values():

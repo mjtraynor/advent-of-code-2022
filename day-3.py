@@ -21,16 +21,19 @@ def create_backpacks_dict(file_path: str, file_name: str) -> dict:
     backpack_number = 1
 
     with open(Path(file_path + file_name), 'r') as file:
+        # Iterate through each line in the file.
         for line in file:
             line_length = len(line.strip())
             for i in range(0, line_length):
                 item = line[i]
+                # Allocate the letter to the 1st or 2nd compartment depending on which half ot the string it is in.
                 if i <= (line_length / 2) - 1:
                     compartment_1_list.append(item)
                 else:
                     compartment_2_list.append(item)
                     if item in compartment_1_list:
                         duplicate_item = item
+            # Build a backpack dictionary, then a backpacks dictionary.
             backpack_dict['compartment_1_list'] = compartment_1_list
             backpack_dict['compartment_2_list'] = compartment_2_list
             backpack_dict['duplicate_item'] = duplicate_item
@@ -58,17 +61,20 @@ def calculate_group_priorities(backpacks_dict: dict, priorities_order: str) -> i
 
     for i in range (0, len(backpacks_dict)):
         backpack = backpacks_dict['backpack_' + str(i + 1)]
+        # For each backpack, build a list of all unique items.
         backpack_unique_items = list(set(backpack['compartment_1_list'] + backpack['compartment_2_list']))
+        # Create a grouped list of unique item set for every three backbacks on the list.
         if i == 0 or i % 3 != 0:
             grouped_list.append(backpack_unique_items)
         else:
+            # When there is a list of three sets then compare them to fine the common item.
             common_item = set(grouped_list[0]).intersection(grouped_list[1]).intersection(grouped_list[2]).pop()
             backpack['common_item'] = common_item
             duplicate_item_priority = priorities_order.rfind(common_item) + 1
             priorities_total += duplicate_item_priority
             if i != len(backpacks_dict):
                 grouped_list = [backpack_unique_items]
-            
+    # Add the final backpack set to the final grouped list.
     common_item = set(grouped_list[0]).intersection(grouped_list[1]).intersection(grouped_list[2]).pop()
     backpack['common_item'] = common_item
     duplicate_item_priority = priorities_order.rfind(common_item) + 1
